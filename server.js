@@ -1,15 +1,7 @@
-var network = require('hallutnetwork');
+var tcpserver = require('./tcpserver');
+var webserver = require('./webserver');
+var co = require('co');
 
-var server = network.createServer({
-	data: function (type, data) {
-		
-	},
-	connect: function() {
 
-	},
-	close: function() {
-
-	}
-});
-
-server.listen(5555);
+co(tcpserver.start)();
+co(webserver.start)();
