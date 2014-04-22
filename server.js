@@ -1,13 +1,13 @@
-var network = require('./network');
+var network = require('hallutnetwork');
 
 var server = network.createServer({
-	data: function (data) {
+	data: function (type, data) {
 		
 	},
-	connect: function(client) {
+	connect: function() {
 
 	},
-	close: function(client) {
+	close: function() {
 
 	}
 });
