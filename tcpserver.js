@@ -1,7 +1,8 @@
 var network = require('hallutnetwork');
 var db = require('rethinkdb');
 var co = require('co');
-var nconf = require('nconf')
+var nconf = require('nconf');
+var thunkify = require('thunkify');
 
 nconf.file({ file: 'config.json' });
 
@@ -47,7 +48,7 @@ exports.start = function* (){
 
 		}
 	});
-	server.listen(5555);
+	server.server.listen(5555);
 };
 
 

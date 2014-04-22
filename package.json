@@ -18,6 +18,10 @@
   "homepage": "https://github.com/considerate/hallutserver",
   "dependencies": {
     "hallutnetwork": "https://github.com/considerate/hallutnetwork/archive/master.tar.gz",
-    "rethinkdb": "^1.12.0-0"
+    "rethinkdb": "^1.12.0-0",
+    "nconf": "~0.6.9",
+    "co": "~3.0.5",
+    "co-wait": "0.0.0",
+    "thunkify": "~2.1.1"
   }
 }
