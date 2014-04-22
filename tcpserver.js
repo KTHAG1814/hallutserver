@@ -11,7 +11,7 @@ var actions = {
 		var query = db.table('temperature').insert({
 			sensor: data.sensor,
 			c: data.celcius,
-			date: new Date
+			date: new Date()
 		}).run;
 		var result = yield thunkify(query)(conn);
 	},
@@ -19,7 +19,7 @@ var actions = {
 		var query = db.table('humidity').insert({
 			sensor: data.sensor,
 			rh: data.humidity,
-			date: new Date
+			date: new Date()
 		}).run;
 		var result = yield thunkify(query)(conn);
 	}
@@ -33,6 +33,7 @@ exports.start = function* (){
 
 	var server = network.createServer({
 		data: function (type, data) {
+			console.log('Client says', type, data);
 			// If type is data database
 			if('function' === typeof actions[type]) {
 				var action = co(actions[type]);
