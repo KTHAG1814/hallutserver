@@ -26,10 +26,12 @@ exports.start = function* () {
 
 	app.use(function*(next) {
 		if(this.path === '/' || this.path === '/data.html') {
+			this.status = 200;
 			yield this.render('index', {
 				content: '<h1>Works.</h1>'
 			});
 		} else {
+			this.status = 404;
 			yield this.render('404', {
 				path: this.path
 			});
