@@ -1,0 +1,36 @@
+{
+  "name": "vega",
+  "version": "1.4.0",
+  "main": "vega.js",
+  "scripts": [
+    "vega.js"
+  ],
+  "ignore": [
+    ".DS_Store",
+    ".git",
+    ".gitignore",
+    ".npmignore",
+    "Makefile",
+    "bin",
+    "examples",
+    "index.js",
+    "node_modules",
+    "package.json",
+    "src",
+    "test"
+  ],
+  "dependencies": {
+    "d3": "3.4.6"
+  },
+  "homepage": "https://github.com/trifacta/vega",
+  "_release": "1.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.4.0",
+    "commit": "59635ff403a08b3c638c44b67a2bcaa1f02f2e19"
+  },
+  "_source": "git://github.com/trifacta/vega.git",
+  "_target": "~1.4.0",
+  "_originalSource": "vega",
+  "_direct": true
+}

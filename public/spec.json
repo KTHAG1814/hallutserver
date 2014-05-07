@@ -1,0 +1,43 @@
+{
+  "width": 500,
+  "height": 200,
+  "data": [{
+    "name": "temperature",
+    "format": {"type":"json", "parse":{"date":"date","value":"number"}}
+  }],
+  "scales": [
+    {
+      "name": "x",
+      "type": "time",
+      "range": "width",
+      "domain": {"data": "temperature", "field": "data.date"}
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "range": "height",
+      "nice": true,
+      "domain": {"data": "temperature", "field": "data.value"}
+    }
+  ],
+  "axes": [
+    {"type": "x", "scale": "x"},
+    {"type": "y", "scale": "y"}
+  ],
+  "marks": [
+    {
+      "from": {
+        "data": "temperature"
+      },
+      "type": "line",
+      "properties": {
+        "enter": {
+          "x": {"scale": "x", "field": "data.date"},
+          "y": {"scale": "y", "field": "data.value"},
+          "stroke": {"value": "steelblue"},
+          "strokeWidth": {"value": 2}
+        }
+      }
+    }
+  ]
+}

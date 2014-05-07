@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta charset="utf8">
+	<title>Preeeety chaarrrutt</title>
+	<script src="bower_components/d3/d3.min.js"></script>
+	<script src="bower_components/topojson/topojson.js"></script>
+	<script src="bower_components/vega/vega.min.js"></script>
+</head>
+  <body>
+    <div id="vis"></div>
+  </body>
+	<script type="text/javascript">
+
+	function get(url, cb) {
+		var xhr = new XMLHttpRequest();
+		xhr.open('get', url, true);
+		xhr.onload = cb;
+		xhr.send();
+	}
+
+
+	function dateReviver(key, value) {
+	    var a;
+	    if (typeof value === 'string') {
+	        a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
+	        if (a) {
+	            return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4],
+	                            +a[5], +a[6]));
+	        }
+	    }
+	    return value;
+	}
+	// parse a spec and create a visualization view
+	function createChart(spec) {
+	  get('/chart/2014,5,3/2014,5,20', function() {
+		var data = JSON.parse(this.responseText, dateReviver);
+		console.log(data);
+		vg.parse.spec(spec, function(chart) { 
+			chart({
+				el:"#vis",
+				data: {
+					"temperature": data
+				}
+			}).update(); 
+		});
+	  });
+	}
+	createChart("spec.json");
+	</script>
+</html>

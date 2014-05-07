@@ -7,21 +7,33 @@ var thunkify = require('thunkify');
 nconf.file({ file: 'config.json' });
 
 db.connect = thunkify(db.connect);
+function deleteUndefineds(object) {
+	for(var key of Object.keys(object).values()) {
+		if(typeof object[key] === 'undefined') {
+			delete object[key];
+		}
+	}	
+}
+
 var actions = {
 	temperature: function *(data, conn) {
-		var query = db.table('temperature').insert({
+		var object = {
 			sensor: data.sensor,
 			c: data.celcius,
 			date: new Date()
-		}).run;
+		};
+		deleteUndefineds(object);
+		var query = db.table('temperature').insert(object).run;
 		var result = yield thunkify(query)(conn);
 	},
 	humidity: function* (data, conn) {
-		var query = db.table('humidity').insert({
+		var object = {
 			sensor: data.sensor,
 			rh: data.humidity,
 			date: new Date()
-		}).run;
+		};
+		deleteUndefineds(object);
+		var query = db.table('humidity').insert().run;
 		var result = yield thunkify(query)(conn);
 	}
 };
