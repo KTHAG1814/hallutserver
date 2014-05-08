@@ -70,8 +70,10 @@ app.get('/chart/:from/:to', function* () {
 	this.body = result.map(function(obj) {
 		var dateOfYear = obj.group[0];
 		var hourOfDay = obj.group[1];
+		var minutes = obj.group[2];
 		var date = dateFromDay(year, dateOfYear);
 		date.setUTCHours(hourOfDay);
+		date.setUTCMinutes(minutes);
 		var avgTemperature = obj.reduction;
 		return {
 			date: date,
