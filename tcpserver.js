@@ -3,6 +3,7 @@ var db = require('rethinkdb');
 var co = require('co');
 var nconf = require('nconf');
 var thunkify = require('thunkify');
+var Promise = require('es6-promise').Promise;
 
 nconf.file({ file: 'config.json' });
 
@@ -15,26 +16,46 @@ function deleteUndefineds(object) {
 	}	
 }
 
-var actions = {
-	temperature: function *(data, conn) {
+function handleResult(resolve, reject) {
+	return function(err, res) {
+		if(err) {
+			reject(err);
+		} else {
+			resolve(res);
+		}		
+	};
+}
+
+function insertTemperature(data, conn) {
+	return new Promise(function(resolve, reject) {
 		var object = {
 			sensor: data.sensor,
 			c: data.celcius,
 			date: new Date()
 		};
 		deleteUndefineds(object);
-		var query = db.table('temperature').insert(object).run;
-		var result = yield thunkify(query)(conn);
-	},
-	humidity: function* (data, conn) {
+		db.table('temperature').insert(object).run(conn, handleResult(resolve,reject));
+	});
+}
+
+function insertHumidity(data, conn) {
+	return new Promise(function(resolve, reject) {
 		var object = {
 			sensor: data.sensor,
 			rh: data.humidity,
 			date: new Date()
 		};
 		deleteUndefineds(object);
-		var query = db.table('humidity').insert().run;
-		var result = yield thunkify(query)(conn);
+		var query = db.table('humidity').insert().run(conn, handleResult(resolve,reject));
+	});	
+}
+
+var actions = {
+	temperature: function *(data, conn) {
+		var result = yield insertTemperature(data,conn);
+	},
+	humidity: function* (data, conn) {
+		var result = yield insertHumidity(data, conn);
 	}
 };
 exports.start = function* (){

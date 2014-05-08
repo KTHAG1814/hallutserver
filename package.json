@@ -19,9 +19,10 @@
   "dependencies": {
     "co": "~3.0.5",
     "co-wait": "0.0.0",
+    "es6-promise": "^1.0.0",
     "hallutnetwork": "https://github.com/considerate/hallutnetwork/archive/master.tar.gz",
-    "koa": "~0.6.0",
-    "koa-router": "~3.1.3",
+    "koa": "^0.6.0",
+    "koa-router": "^3.1.3",
     "koa-static": "^1.4.5",
     "nconf": "~0.6.9",
     "rethinkdb": "^1.12.0-0",

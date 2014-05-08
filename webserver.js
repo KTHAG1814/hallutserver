@@ -21,7 +21,7 @@ function getHourAvg(conn, from, to) {
 			db.time.apply(null, to), 
 			{index: 'date'}
 		).group(function (temp) {
-		  return [temp('date').dayOfYear(),temp('date').hours()];
+		  return [temp('date').dayOfYear(),temp('date').hours(), temp('date').minutes()];
 		}).map(function(temp) {
 		  return temp('c');
 		}).avg().run(conn, done);	
@@ -37,8 +37,8 @@ function convertToNum(str) {
 }
 
 function dateFromDay(year, day){
-  var date = new Date(year, 0); // initialize a date in `year-01-01`
-  return new Date(date.setDate(day)); // add the number of days
+  var date = new Date(Date.UTC(year, 0)); // initialize a date in `year-01-01`
+  return new Date(date.setUTCDate(day)); // add the number of days
 }
 
 app.get('/chart/:from/:to', function* () {
@@ -71,7 +71,7 @@ app.get('/chart/:from/:to', function* () {
 		var dateOfYear = obj.group[0];
 		var hourOfDay = obj.group[1];
 		var date = dateFromDay(year, dateOfYear);
-		date.setHours(hourOfDay);
+		date.setUTCHours(hourOfDay);
 		var avgTemperature = obj.reduction;
 		return {
 			date: date,
