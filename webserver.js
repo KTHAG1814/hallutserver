@@ -20,9 +20,7 @@ function getHourAvg(conn, from, to) {
 			db.time.apply(null, from), 
 			db.time.apply(null, to), 
 			{index: 'date'}
-		).group(function (temp) {
-		  return [temp('date').dayOfYear(),temp('date').hours(), temp('date').minutes()];
-		}).map(function(temp) {
+		).group({index: 'minutes'}).map(function(temp) {
 		  return temp('c');
 		}).avg().run(conn, done);	
 	};
