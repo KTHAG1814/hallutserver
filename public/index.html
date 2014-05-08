@@ -7,11 +7,44 @@
 	<script src="bower_components/d3/d3.min.js"></script>
 	<script src="bower_components/topojson/topojson.js"></script>
 	<script src="bower_components/vega/vega.min.js"></script>
+ 	
+
+ 	<script type="text/javascript" src="/bower_components/jquery/jquery.min.js"></script>
+ 	<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
+  <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+
+
 </head>
   <body>
+
+    <div class='input-group date' id='from'>
+        <input type='text' class="form-control" />
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+        </span>
+    </div>
+    <div class='input-group date' id='to'>
+        <input type='text' class="form-control" />
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+        </span>
+    </div>
+    <button id="update">Sök</button>
+
     <div id="vis"></div>
   </body>
 	<script type="text/javascript">
+
+    $(function () {
+        $('#from').datetimepicker();
+        $('#to').datetimepicker();
+        $('#update').click(function() {
+        	var from = $('#from').data("DateTimePicker").getDate();
+        	var to = $('#to').data("DateTimePicker").getDate();
+        	createChart(from, to);
+        });
+    });
 
 	function get(url, cb) {
 		var xhr = new XMLHttpRequest();
@@ -33,8 +66,9 @@
 	    return value;
 	}
 	// parse a spec and create a visualization view
-	function createChart(spec) {
-	  get('/chart/2014,5,3/2014,5,20', function() {
+	function createChart(from, to) {
+	  var spec = 'spec.json';
+	  get(['','chart', from, to].join('/'), function() {
 		var data = JSON.parse(this.responseText, dateReviver);
 		console.log(data);
 		vg.parse.spec(spec, function(chart) { 
@@ -47,6 +81,5 @@
 		});
 	  });
 	}
-	createChart("spec.json");
 	</script>
 </html>

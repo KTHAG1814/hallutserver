@@ -6,24 +6,54 @@ var router = require('koa-router');
 var serve = require('koa-static');
 var db = require('rethinkdb');
 var nconf = require('nconf');
+var Promise = require('es6-promise').Promise;
 
 app.use(router(app));
 app.use(serve('./public'));
 
-app.get('/', function* () {
-	this.body = 'Hello Routed Universe!';
-});
+function handleResult(resolve, reject) {
+	return function(err, res) {
+		if(err) {
+			reject(err);
+		} else {
+			resolve(res);
+		}		
+	};
+}
+
+
+function getIndexAvg(conn, from, to, index) {
+	console.log(from, to);
+	return new Promise(function(resolve, reject) {
+		var query = db.table('temperature').between(
+		from,
+		to, 
+		{index: index})
+		.group({index: index})
+		.map(function(temp) {
+		  return temp('c');
+		}).avg();
+		console.log(query);
+		query.run(conn, handleResult(resolve, reject));
+	});
+}
+
+function hourArray(date) {
+	var time = db.epochTime(date.getTime() / 1000);
+	return [time.dayOfYear(), time.hours()];
+}
+
+function minuteArray(date) {
+	var time = db.epochTime(date.getTime() / 1000 );
+	return [time.dayOfYear(), time.hours(), time.minutes()];
+}
 
 function getHourAvg(conn, from, to) {
-	return function(done) {
-		db.table('temperature').between(
-			db.time.apply(null, from), 
-			db.time.apply(null, to), 
-			{index: 'date'}
-		).group({index: 'minutes'}).map(function(temp) {
-		  return temp('c');
-		}).avg().run(conn, done);	
-	};
+	return getIndexAvg(conn, hourArray(from), hourArray(to), 'hours');
+}
+
+function getMinuteAvg(conn, from, to) {
+	return getIndexAvg(conn, minuteArray(from), minuteArray(to), 'minutes');
 }
 
 function convertToNum(str) {
@@ -45,30 +75,25 @@ app.get('/chart/:from/:to', function* () {
 		port: nconf.get('db:port')
 	});
 	conn.use('hallut');
+	var from, to;
 	try {
-		var from = this.params.from.split(','); //convert to array
-		from = from.map(convertToNum);
-		from.push('Z');
-		var to = this.params.to.split(','); //convert to array
-		to = to.map(convertToNum);
-		to.push('Z');
+		from = new Date(Date.parse(this.params.from));
+		to = new Date(Date.parse(this.params.to));
 	} catch(e) {
 		this.status = 400;
 		return;
 	}
-
-	if(from.length !== 4 || to.length !== 4) {
-		this.status = 400;
+	try {
+		var result = yield getMinuteAvg(conn, from, to);
+	} catch(e) {
+		console.log(e);
 		return;
 	}
-
-	var result = yield getHourAvg(conn, from, to);
 	var year = new Date().getFullYear(); //This year
-	console.log(year);
 	this.body = result.map(function(obj) {
 		var dateOfYear = obj.group[0];
-		var hourOfDay = obj.group[1];
-		var minutes = obj.group[2];
+		var hourOfDay = obj.group[1] || 0;
+		var minutes = obj.group[2] || 0;
 		var date = dateFromDay(year, dateOfYear);
 		date.setUTCHours(hourOfDay);
 		date.setUTCMinutes(minutes);
