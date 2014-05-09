@@ -9,7 +9,7 @@
 	<script src="bower_components/vega/vega.min.js"></script>
  	
 
- 	<script type="text/javascript" src="/bower_components/jquery/jquery.min.js"></script>
+ 	<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
  	<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
   <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
@@ -33,6 +33,7 @@
     <button id="update">Sök</button>
 
     <div id="vis"></div>
+    <div id="fake"></div>
   </body>
 	<script type="text/javascript">
 
@@ -40,8 +41,8 @@
         $('#from').datetimepicker();
         $('#to').datetimepicker();
         $('#update').click(function() {
-        	var from = $('#from').data("DateTimePicker").getDate();
-        	var to = $('#to').data("DateTimePicker").getDate();
+        	var from = $('#from').data("DateTimePicker").getDate().toISOString();
+        	var to = $('#to').data("DateTimePicker").getDate().toISOString();
         	createChart(from, to);
         });
     });
@@ -81,5 +82,12 @@
 		});
 	  });
 	}
+
+	vg.parse.spec("fake.json", function(chart) { 
+		chart({
+			el:"#fake"
+		}).update(); 
+	});
+
 	</script>
 </html>

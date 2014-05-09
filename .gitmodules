@@ -1,0 +1,3 @@
+[submodule "public/slides"]
+	path = public/slides
+	url = git@github.com:considerate/hallutslides.git

@@ -1,0 +1,92 @@
+{
+  "width": 500,
+  "height": 200,
+  "data": [{
+    "name": "temperature",
+    "format": {"type":"json", "parse":{"date":"date","value":"number"}},
+    "values": [{"date": "2014-05-12T00:00",
+       "value": 18
+    },{"date": "2014-05-12T01:00",
+       "value": 18
+    },{"date": "2014-05-12T02:00",
+       "value": 19
+    },{"date": "2014-05-12T03:00",
+       "value": 19
+    },{"date": "2014-05-12T04:00",
+       "value": 20
+    },{"date": "2014-05-12T05:00",
+       "value": 21
+    },{"date": "2014-05-12T06:00",
+       "value": 21
+    },{"date": "2014-05-12T07:00",
+       "value": 22
+    },{"date": "2014-05-12T08:00",
+       "value": 22
+    },{"date": "2014-05-12T09:00",
+       "value": 20
+    },{"date": "2014-05-12T10:00",
+       "value": 19
+    },{"date": "2014-05-12T11:00",
+       "value": 17
+    },{"date": "2014-05-12T12:00",
+       "value": 16
+    },{"date": "2014-05-12T13:00",
+       "value": 16
+    },{"date": "2014-05-12T14:00",
+       "value": 16
+    },{"date": "2014-05-12T15:00",
+       "value": 18
+    },{"date": "2014-05-12T16:00",
+       "value": 20
+    },{"date": "2014-05-12T17:00",
+       "value": 21
+    },{"date": "2014-05-12T18:00",
+       "value": 21
+    },{"date": "2014-05-12T19:00",
+       "value": 22
+    },{"date": "2014-05-12T20:00",
+       "value": 22
+    },{"date": "2014-05-12T21:00",
+       "value": 21
+    },{"date": "2014-05-12T22:00",
+       "value": 20
+    },{"date": "2014-05-12T23:00",
+       "value": 19
+    }]
+  }],
+  "scales": [
+    {
+      "name": "x",
+      "type": "time",
+      "range": "width",
+      "domain": {"data": "temperature", "field": "data.date"}
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "range": "height",
+      "nice": true,
+      "domain": {"data": "temperature", "field": "data.value"}
+    }
+  ],
+  "axes": [
+    {"type": "x", "scale": "x"},
+    {"type": "y", "scale": "y"}
+  ],
+  "marks": [
+    {
+      "from": {
+        "data": "temperature"
+      },
+      "type": "line",
+      "properties": {
+        "enter": {
+          "x": {"scale": "x", "field": "data.date"},
+          "y": {"scale": "y", "field": "data.value"},
+          "stroke": {"value": "orange"},
+          "strokeWidth": {"value": 2}
+        }
+      }
+    }
+  ]
+}

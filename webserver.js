@@ -23,7 +23,6 @@ function handleResult(resolve, reject) {
 
 
 function getIndexAvg(conn, from, to, index) {
-	console.log(from, to);
 	return new Promise(function(resolve, reject) {
 		var query = db.table('temperature').between(
 		from,
@@ -38,18 +37,24 @@ function getIndexAvg(conn, from, to, index) {
 	});
 }
 
+function dayOfYear(date) {
+	var january1 = new Date(Date.UTC(date.getFullYear(),0,1));
+	return Math.ceil((date.getTime() - january1.getTime()) / 86400000);
+}
+
 function hourArray(date) {
 	var time = db.epochTime(date.getTime() / 1000);
 	return [time.dayOfYear(), time.hours()];
 }
 
 function minuteArray(date) {
-	var time = db.epochTime(date.getTime() / 1000 );
-	return [time.dayOfYear(), time.hours(), time.minutes()];
+	var day = dayOfYear(date);
+	return [day, date.getUTCHours(), date.getUTCMinutes()];
 }
 
 function getHourAvg(conn, from, to) {
-	return getIndexAvg(conn, hourArray(from), hourArray(to), 'hours');
+	var day = dayOfYear(date);
+	return [day, date.getUTCHours()];
 }
 
 function getMinuteAvg(conn, from, to) {
@@ -85,24 +90,23 @@ app.get('/chart/:from/:to', function* () {
 	}
 	try {
 		var result = yield getMinuteAvg(conn, from, to);
+		var year = new Date().getFullYear(); //This year
+		this.body = result.map(function(obj) {
+			var dateOfYear = obj.group[0];
+			var hourOfDay = obj.group[1];
+			var minutes = obj.group[2];
+			var date = dateFromDay(year, dateOfYear);
+			date.setUTCHours(hourOfDay || 0);
+			date.setUTCMinutes(minutes || 0);
+			var avgTemperature = obj.reduction;
+			return {
+				date: date,
+				value: avgTemperature
+			};
+		});
 	} catch(e) {
-		console.log(e);
 		return;
 	}
-	var year = new Date().getFullYear(); //This year
-	this.body = result.map(function(obj) {
-		var dateOfYear = obj.group[0];
-		var hourOfDay = obj.group[1] || 0;
-		var minutes = obj.group[2] || 0;
-		var date = dateFromDay(year, dateOfYear);
-		date.setUTCHours(hourOfDay);
-		date.setUTCMinutes(minutes);
-		var avgTemperature = obj.reduction;
-		return {
-			date: date,
-			value: avgTemperature
-		};
-	});
 });
 
 exports.start = function () {
